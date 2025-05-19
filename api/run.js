@@ -5,12 +5,16 @@ export default async function handler(req, res) {
   let browser = null;
 
   try {
-    const executablePath = await chromium.executablePath || '/usr/bin/chromium-browser';
+    const executablePath = await chromium.executablePath;
+
+    if (!executablePath) {
+      throw new Error("Chromium executablePath not found.");
+    }
 
     browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: executablePath,
+      executablePath,
       headless: chromium.headless,
     });
 
@@ -36,8 +40,6 @@ export default async function handler(req, res) {
         return { name, price, ...stats };
       });
     });
-
-    await browser.close();
 
     res.status(200).json(data);
   } catch (error) {
