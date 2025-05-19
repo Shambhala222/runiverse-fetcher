@@ -1,12 +1,17 @@
-const fs = require("fs");
-const path = require("path");
-const puppeteer = require("puppeteer");
+import chromium from 'chrome-aws-lambda';
+import puppeteer from 'puppeteer-core';
 
 export default async function handler(req, res) {
+  let browser = null;
+
   try {
-    const browser = await puppeteer.launch({
-      headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    const executablePath = await chromium.executablePath;
+
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath,
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
@@ -32,12 +37,13 @@ export default async function handler(req, res) {
       });
     });
 
-    await browser.close();
-
-    res.setHeader("Content-Type", "application/json");
     res.status(200).json(data);
   } catch (error) {
     console.error("Fehler beim Abruf:", error);
     res.status(500).json({ error: "Fehler beim Abruf", details: error.message });
+  } finally {
+    if (browser !== null) {
+      await browser.close();
+    }
   }
 }
