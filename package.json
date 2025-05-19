@@ -2,7 +2,7 @@
   "name": "runiverse-vercel",
   "version": "1.0.0",
   "dependencies": {
-    "puppeteer-core": "^21.3.8",
-    "chrome-aws-lambda": "^10.1.0"
+    "puppeteer-core": "10.1.0",
+    "chrome-aws-lambda": "10.1.0"
   }
 }
