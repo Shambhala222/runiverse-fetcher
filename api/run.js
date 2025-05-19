@@ -1,21 +1,12 @@
-import chromium from 'chrome-aws-lambda';
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer';
 
 export default async function handler(req, res) {
-  let browser = null;
+  let browser;
 
   try {
-    const executablePath = await chromium.executablePath;
-
-    if (!executablePath) {
-      throw new Error("Chromium executablePath not found.");
-    }
-
     browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath,
-      headless: chromium.headless,
+      headless: "new",
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     const page = await browser.newPage();
@@ -46,8 +37,6 @@ export default async function handler(req, res) {
     console.error("Fehler beim Abruf:", error);
     res.status(500).json({ error: "Fehler beim Abruf", details: error.message });
   } finally {
-    if (browser !== null) {
-      await browser.close();
-    }
+    if (browser) await browser.close();
   }
 }
