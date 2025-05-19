@@ -1,12 +1,5 @@
 {
   "name": "runiverse-vercel",
   "version": "1.0.0",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "puppeteer": "19.11.1"
-  }
+  "scripts": {}
 }
